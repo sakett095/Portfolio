@@ -1,4 +1,4 @@
-													-- ADVENTURE WORKS
+							           -- ADVENTURE WORKS
 # About Company
 -- Adventure Works Cycles, the company on which the Adventure Works sample databases are based, is a large, multinational manufacturing company. 
 -- The company manufactures and sells metal and composite bicycles to North American, European and Asian commercial markets. While its base 
@@ -18,11 +18,15 @@
 
 
 #1.Lookup the productname from the Product sheet to Sales sheet.
-select Order_Date,EnglishProductName from adventureworks.salesmerged as s inner join adventureworks.dimproduct p on s.ProductKey=p.ProductKey;
+select Order_Date,EnglishProductName from adventureworks.salesmerged as s 
+inner join 
+adventureworks.dimproduct p on s.ProductKey=p.ProductKey;
 
 #2.Lookup the Customerfullname from the Customer and Unit Price from Product sheet to Sales sheet.
-select order_date,case when middlename is null then concat(firstname,' ',lastname) else
-concat(firstname,' ',middlename,' ',lastname) end as FullName, `Unit Price`
+select order_date,
+case when middlename is null then concat(firstname,' ',lastname) else
+concat(firstname,' ',middlename,' ',lastname) end as FullName,
+`Unit Price`
 from adventureworks.salesmerged s inner join adventureworks.dimcustomer c on s.CustomerKey=c.CustomerKey
 inner join adventureworks.dimproduct p on s.ProductKey=p.ProductKey;
 
@@ -68,7 +72,8 @@ select *,round(ProductStandardCost*OrderQuantity,2) as Production_Cost from adve
 select *,round(Sales_Amount-Production_Cost-Freight-TaxAmt,2) as Profit from adventureworks.salesmerged;
 
 #7.Create a Pivot table for month and sales (provide the Year as filter to select a particular Year)
-select year(order__date) as Year,month(order__date) as Month,monthname(order__date) as Month_Name ,round(sum(sales_amount),2) as Total_Sales
+select year(order__date) as Year,month(order__date) as Month,monthname(order__date) as Month_Name ,
+round(sum(sales_amount),2) as Total_Sales
 from adventureworks.salesmerged 
 group by year(order__date),month(order__date),month_name 
 order by year,month;
@@ -81,7 +86,8 @@ select year(order__date) as year,round(sum(sales_amount),2) as Total_Sales
 from adventureworks.salesmerged group by Year(order__date) order by year;
 
 #9.Show Monthwise sales
-select year(order__date) as Year,month(order__date) as Month,monthname(order__date) as Month_Name ,round(sum(sales_amount),2) as Total_Sales
+select year(order__date) as Year,month(order__date) as Month,monthname(order__date) as Month_Name ,
+round(sum(sales_amount),2) as Total_Sales
 from adventureworks.salesmerged 
 group by year(order__date),month(order__date),month_name 
 order by year,month;
@@ -94,23 +100,28 @@ select Quarter,round(sum(sales_amount),2) as Total_Sales
 from adventureworks.salesmerged group by Quarter order by quarter;
 
 #11.Show Salesamount and Productioncost together
-select year(order__date) Year,round(sum(sales_amount),2) as Total_Sales,round(sum(Production_Cost),2) as Total_ProductionCost
+select year(order__date) Year,round(sum(sales_amount),2) as Total_Sales,
+round(sum(Production_Cost),2) as Total_ProductionCost
 from adventureworks.salesmerged group by year(order__date) order by year;
 
-select year(order__date) Year,round(sum(sales_amount),2) as Total_Sales,round(sum(Production_Cost),2) as Total_ProductionCost,
+select year(order__date) Year,round(sum(sales_amount),2) as Total_Sales,
+round(sum(Production_Cost),2) as Total_ProductionCost,
 round(sum(profit),2) as Total_Profit
 from adventureworks.salesmerged group by year(order__date) order by year;
 
 #12.Above one with month and profit
 
-select year(order__date) Year,Month,MonthName,round(sum(sales_amount),2) as Total_Sales,round(sum(Production_Cost),2) as Total_ProductionCost,
+select year(order__date) Year,Month,MonthName,round(sum(sales_amount),2) as Total_Sales,
+round(sum(Production_Cost),2) as Total_ProductionCost,
 round(sum(profit),2) as Total_Profit
 from adventureworks.salesmerged group by year(order__date),MonthName,Month order by year,month;
 
 #13. Show profit ratio year wise quarter wise then monthwise with sales and profit values.
 with profit as(
 select year(order__date) as Year,quarter(order__date) as Quarter,monthname(order__date) as Month_Name,Month,
-round(sum(sales_amount),2) as Total_Sales,round(sum(profit),2) as Total_Profit,concat(round((sum(profit)/sum(sales_amount))*100),"%") as Profit_Ratio
+round(sum(sales_amount),2) as Total_Sales,round(sum(profit),2) as Total_Profit,
+concat(round((sum(profit)/sum(sales_amount))*100),"%") 
+as Profit_Ratio
 from adventureworks.salesmerged group by year(order__date) ,quarter(order__date) ,monthname(order__date),month
 order by year,quarter,month)
 select Year,Quarter,Month_Name,Total_Sales,Total_Profit,Profit_Ratio
@@ -138,12 +149,15 @@ group by EnglishProductSubcategoryName;
 
 
 #17. Compare sales qurater wise every year .
-select Year,Quarter,round(sum(sales_amount),2) as Total_Sales ,lag(round(sum(sales_amount),2),1,0) over (order by year,Quarter) Last_quarter  from adventureworks.salesmerged
+select Year,Quarter,round(sum(sales_amount),2) as Total_Sales ,
+lag(round(sum(sales_amount),2),1,0) over (order by year,Quarter) Last_quarter  
+from adventureworks.salesmerged
 group by year,quarter;
 
 #18. Show percentage growth too in above question.
 with running as(
-select Year,Quarter,round(sum(sales_amount),2) as Total_Sales,lag(round(sum(sales_amount),2),1,0) over (order by Year,Quarter) as LastQtr_Sales
+select Year,Quarter,round(sum(sales_amount),2) as Total_Sales,
+lag(round(sum(sales_amount),2),1,0) over (order by Year,Quarter) as LastQtr_Sales
 from adventureworks.salesmerged group by year,quarter)
 select *,concat(round(((total_sales-LastQtr_Sales)/lastqtr_sales)*100,2),"%") as Percentage_Growth from running;
 
@@ -177,7 +191,8 @@ from adventureworks.salesmerged s inner join adventureworks.dimcustomer c on s.C
 group by CommuteDistance order by No_Of_Customers desc;
 
 #23.Show Percentage of customers as per their commute distance.
-select CommuteDistance,concat(round((count(c.CustomerKey)/(select count(customerkey) as total from adventureworks.salesmerged))*100,2),"%") 
+select CommuteDistance,concat(round((count(c.CustomerKey)/(select count(customerkey) as total 
+from adventureworks.salesmerged))*100,2),"%") 
 as Percentage_Of_Customers
 from adventureworks.salesmerged s inner join adventureworks.dimcustomer c on s.CustomerKey=c.CustomerKey
 group by CommuteDistance order by Percentage_of_customers desc;
