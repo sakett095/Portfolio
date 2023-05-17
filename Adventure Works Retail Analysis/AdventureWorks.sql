@@ -12,7 +12,7 @@
 -- customers, extending their product availability through an external Web site, and reducing their cost of sales through lower production costs.
 
 
-# As per the problem statement I write multiple SQL queries to fetch the insights from the datasets.
+# As per the problem statement I write multiple SQL queries to retrieve the insights from the datasets.
 
 #========================================================================================================================================================
 
