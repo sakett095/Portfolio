@@ -1,19 +1,24 @@
-About Company:
+# About Company:
 
-Olist is a Brazilian e-commerce platform that provides solutions for small and medium-sized businesses to sell their products online.
-It was founded in 2015 by Tiago Dalvi and has since grown into one of the largest online marketplaces in Brazil.
+# Olist is a Brazilian e-commerce platform that provides solutions for small and medium-sized businesses to sell their products online.
+# It was founded in 2015 by Tiago Dalvi and has since grown into one of the largest online marketplaces in Brazil.
 
-Olist's main objective is to connect sellers with potential buyers, offering them a platform to showcase and sell their products. 
-The company acts as an intermediary between sellers and various marketplaces, such as Mercado Livre, Americanas.com, Submarino, and 
-others. This enables sellers to reach a broader customer base without having to individually manage their presence on each platform.
+# Olist's main objective is to connect sellers with potential buyers, offering them a platform to showcase and sell their products. 
+# The company acts as an intermediary between sellers and various marketplaces, such as Mercado Livre, Americanas.com, Submarino, and 
+# others. This enables sellers to reach a broader customer base without having to individually manage their presence on each platform.
 
-The platform operates on a drop-shipping model, where sellers ship their products directly to customers, eliminating the need for 
-maintaining inventory. This approach allows small businesses to start selling online with minimal upfront costs and logistics.
+# The platform operates on a drop-shipping model, where sellers ship their products directly to customers, eliminating the need for 
+# maintaining inventory. This approach allows small businesses to start selling online with minimal upfront costs and logistics.
 
-The data released by the company is from 2016 to 2018.
-Datasets provided by: AI Variant
+# The data released by the company is from 2016 to 2018.
+# Datasets provided by: AI Variant
 
-I had written and executed multiple MySQL queries to retrieve meaningful insights from the data.
+# Problem statement:
+# The Olist store needs actionable insights into customer behaviour, the most preferable payment mode, customer satisfaction, and the 
+# top performing cities to optimize marketing strategies and inventory management.
+
+
+# As per the problem statement I write multiple SQL queries to retrieve the insights from the datasets.
 ============================================================================================================================================================================================================================================================================================================
 
 
@@ -93,7 +98,15 @@ ON oo.order_id=ord.order_id
 GROUP BY review_score
 ORDER BY review_score;
 
-#6.Show the top 3 product categories in year 2018 by payment value.
+#6.Show the most preferable payment type with its percent in total in descending order.
+SELECT payment_type,CONCAT(ROUND((SUM(payment_value)*100)/(select (SUM(payment_value)) FROM olist_store.olist_order_payments_dataset),2),"%") 
+AS Percent_in_Total
+FROM olist_store.olist_order_payments_dataset
+GROUP BY payment_type
+HAVING Percent_in_Total>0
+ORDER BY SUM(payment_value) DESC;
+
+#7.Show the top 3 product categories in year 2018 by payment value.
 with CTE_top3 AS (
 SELECT product_category_name_english AS Product_Category, ROUND(SUM(payment_value)) AS Total_Payment,
 DENSE_RANK() OVER (ORDER BY SUM(payment_value) DESC) AS rnk
@@ -109,7 +122,7 @@ SELECT Product_category, Total_Payment
 FROM CTE_Top3
 WHERE rnk<=3;
 
-#7.Show top 5 cities with highest payment value.
+#8.Show top 5 cities with highest payment value.
 
 SELECT customer_city,ROUND(SUM(payment_value)) AS Total_Payment 
 FROM olist_store.olist_orders_dataset oo INNER JOIN olist_store.olist_order_payments_dataset op ON oo.order_id=op.order_id
@@ -118,7 +131,7 @@ GROUP BY customer_city
 ORDER BY Total_payment desc
 limit 5;
 
-#8. Show payment wise top 5 product categories and show top 3 cities of those product categories.
+#9. Show payment wise top 5 product categories and show top 3 cities of those product categories.
 
 WITH CTE AS (
 SELECT product_category_name_english,customer_city,round(sum(payment_value)) as Total_Payment,
