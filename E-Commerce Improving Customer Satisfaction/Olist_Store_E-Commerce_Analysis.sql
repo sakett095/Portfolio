@@ -1,3 +1,22 @@
+About Company:
+
+Olist is a Brazilian e-commerce platform that provides solutions for small and medium-sized businesses to sell their products online.
+It was founded in 2015 by Tiago Dalvi and has since grown into one of the largest online marketplaces in Brazil.
+
+Olist's main objective is to connect sellers with potential buyers, offering them a platform to showcase and sell their products. 
+The company acts as an intermediary between sellers and various marketplaces, such as Mercado Livre, Americanas.com, Submarino, and 
+others. This enables sellers to reach a broader customer base without having to individually manage their presence on each platform.
+
+The platform operates on a drop-shipping model, where sellers ship their products directly to customers, eliminating the need for 
+maintaining inventory. This approach allows small businesses to start selling online with minimal upfront costs and logistics.
+
+The data released by the company is from 2016 to 2018.
+Datasets provided by: AI Variant
+
+I had written and executed multiple MySQL queries to retrieve meaningful insights from the data.
+============================================================================================================================================================================================================================================================================================================
+
+
 CREATE DATABASE olist_store;
 USE olist_store;
 
